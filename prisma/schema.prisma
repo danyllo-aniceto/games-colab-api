@@ -27,3 +27,14 @@ model Platform {
 
   @@map("platforms")
 }
+
+model Game {
+  id        BigInt @id
+  name      String
+  developer String
+  summary   String
+  genre     String
+  image     String
+
+  @@map("games")
+}

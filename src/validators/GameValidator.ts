@@ -1,18 +1,21 @@
 import prismaClient from '../prisma'
 import * as yup from 'yup'
 
-class PlatformValidator {
+class GameValidator {
   async idExist(id: number): Promise<boolean> {
-    const platform = await prismaClient.platform.findFirst({
+    const game = await prismaClient.game.findFirst({
       where: { id }
     })
-    return !!platform
+    return !!game
   }
 
   createValidator() {
     return yup.object().shape({
       name: yup.string().required('Name is required'),
-      image: yup.string().required('Image is required')
+      image: yup.string().required('Image is required'),
+      developer: yup.string().required('Developer is required'),
+      summary: yup.string().required('Summary is required'),
+      genre: yup.string().required('Genre is required')
     })
   }
 
@@ -20,7 +23,10 @@ class PlatformValidator {
     return yup.object().shape({
       id: yup.number().required('Id is required in params'),
       name: yup.string().optional(),
-      image: yup.string().optional()
+      image: yup.string().optional(),
+      developer: yup.string().optional(),
+      summary: yup.string().optional(),
+      genre: yup.string().optional()
     })
   }
 
@@ -37,4 +43,4 @@ class PlatformValidator {
   }
 }
 
-export { PlatformValidator }
+export { GameValidator }
