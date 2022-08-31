@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
+  id         BigInt   @id
   name       String
   email      String
   password   String

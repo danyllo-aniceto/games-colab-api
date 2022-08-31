@@ -39,7 +39,7 @@ export class UserController {
 
     try {
       const userService = new UserService()
-      await userService.delete(id)
+      await userService.delete(Number(id))
 
       res.status(200).json({ message: 'Usuário deletado com sucesso' })
     } catch (error) {
@@ -61,7 +61,7 @@ export class UserController {
 
     try {
       const userService = new UserService()
-      const user = await userService.getUserById(id)
+      const user = await userService.getUserById(Number(id))
       if (!user) {
         res.status(200).json({ message: 'Este usuário não existe' })
       }

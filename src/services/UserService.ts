@@ -5,6 +5,7 @@ class UserService {
   async create(data: User): Promise<User> {
     const user = await prismaClient.user.create({
       data: {
+        id: data.id,
         name: data.name,
         email: data.email,
         password: data.password
@@ -13,11 +14,11 @@ class UserService {
     return user
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await prismaClient.user.delete({ where: { id } })
   }
 
-  async getUserById(id: string): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const user: User = await prismaClient.user.findFirst({ where: { id } })
     return user
   }
@@ -29,7 +30,7 @@ class UserService {
 
   async putUserById(id: number, data: User): Promise<void> {
     await prismaClient.user.update({
-      where: { id: id.toString() },
+      where: { id: id },
       data: {
         name: data.name,
         email: data.email,

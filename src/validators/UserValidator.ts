@@ -4,7 +4,7 @@ import * as yup from 'yup'
 class UserValidator {
   async idExist(id: number): Promise<boolean> {
     const user = await prismaClient.user.findFirst({
-      where: { id: id.toString() }
+      where: { id }
     })
     return !!user
   }
