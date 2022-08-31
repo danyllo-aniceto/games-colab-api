@@ -1,11 +1,11 @@
-import { getCustomRepository } from 'typeorm'
-import { UserRepository } from '../repository/UserRepository'
+import prismaClient from '../prisma'
 import * as yup from 'yup'
 
 class UserValidator {
-  async idExist(id: number): Promise<Boolean> {
-    const repository = getCustomRepository(UserRepository)
-    const user = await repository.findOne(id)
+  async idExist(id: number): Promise<boolean> {
+    const user = await prismaClient.user.findFirst({
+      where: { id: id.toString() }
+    })
     return !!user
   }
 

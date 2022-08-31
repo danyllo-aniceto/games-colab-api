@@ -1,35 +1,41 @@
-import { getCustomRepository } from 'typeorm'
-import { IUserDTO } from '../dtos/IUserDTO'
-import { UserRepository } from '../repository/UserRepository'
+import { User } from '@prisma/client'
+import prismaClient from '../prisma'
 
 class UserService {
-  async create(data: IUserDTO): Promise<IUserDTO> {
-    const concectUser = getCustomRepository(UserRepository)
-    const user = concectUser.create(data)
-    await concectUser.save(user)
+  async create(data: User): Promise<User> {
+    const user = await prismaClient.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password
+      }
+    })
     return user
   }
 
   async delete(id: string): Promise<void> {
-    const conectUser = getCustomRepository(UserRepository)
-    await conectUser.delete({ id: Number(id) })
+    await prismaClient.user.delete({ where: { id } })
   }
 
-  async getUserById(id: string): Promise<IUserDTO> {
-    const conectUser = getCustomRepository(UserRepository)
-    const user = await conectUser.findOne(id)
+  async getUserById(id: string): Promise<User> {
+    const user: User = await prismaClient.user.findFirst({ where: { id } })
     return user
   }
 
-  async getUser() {
-    const conectUser = getCustomRepository(UserRepository)
-    const allUsers = await conectUser.find()
-    return allUsers
+  async getUser(): Promise<User[]> {
+    const users = await prismaClient.user.findMany()
+    return users
   }
 
-  async putUserById(id: number, data: IUserDTO) {
-    const conectUser = getCustomRepository(UserRepository)
-    await conectUser.update(id, data)
+  async putUserById(id: number, data: User): Promise<void> {
+    await prismaClient.user.update({
+      where: { id: id.toString() },
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password
+      }
+    })
   }
 }
 

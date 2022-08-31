@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    
-    "target": "ES2017",                               
-    "module": "commonjs",                             
-    "esModuleInterop": true,                             
-    "forceConsistentCasingInFileNames": true,           
-    "strict": false,                              
-    "skipLibCheck": true                                 
+    "target": "es2017",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "outDir": "build",
+    "rootDir": "./",
+    // "typeRoots": [
+    //   "./src/@types",
+    //   "node_modules/@types"
+    // ]
   }
 }
