@@ -5,7 +5,6 @@ class PlatformService {
   async create(data: Platform): Promise<Platform> {
     const platform = await prismaClient.platform.create({
       data: {
-        id: data.id,
         name: data.name,
         image: data.image
       }

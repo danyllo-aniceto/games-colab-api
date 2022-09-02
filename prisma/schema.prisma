@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id         BigInt   @id
+  id         Int      @id @default(autoincrement())
   name       String
   email      String
   password   String
@@ -19,22 +19,36 @@ model User {
 }
 
 model Platform {
-  id         BigInt   @id
-  name       String
-  image      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt()
+  id           Int            @id @default(autoincrement())
+  name         String
+  image        String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt()
+  PlatformGame PlatformGame[]
 
   @@map("platforms")
 }
 
 model Game {
-  id        BigInt @id
-  name      String
-  developer String
-  summary   String
-  genre     String
-  image     String
+  id           Int            @id @default(autoincrement())
+  name         String
+  developer    String
+  summary      String
+  genre        String
+  image        String
+  PlatformGame PlatformGame[]
 
   @@map("games")
+}
+
+model PlatformGame {
+  id         Int       @id @default(autoincrement())
+  idPlatform Int
+  idGame     Int
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt()
+  Platform   Platform? @relation(fields: [idPlatform], references: [id])
+  Game       Game?     @relation(fields: [idGame], references: [id])
+
+  @@map("platformGame")
 }

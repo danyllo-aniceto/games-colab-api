@@ -5,7 +5,6 @@ class UserService {
   async create(data: User): Promise<User> {
     const user = await prismaClient.user.create({
       data: {
-        id: data.id,
         name: data.name,
         email: data.email,
         password: data.password

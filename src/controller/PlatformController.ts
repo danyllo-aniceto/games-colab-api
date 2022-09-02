@@ -29,7 +29,7 @@ export class PlatformController {
     try {
       await validator
         .deleteByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
@@ -50,7 +50,7 @@ export class PlatformController {
     try {
       await validator
         .getByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
@@ -90,14 +90,13 @@ export class PlatformController {
       if (!(await validator.idExist(Number(id)))) {
         return res.status(400).json({ message: 'Plataforma não existe' })
       }
-
-      try {
-        const platformService = new PlatformService()
-        await platformService.putPlatformById(Number(id), data)
-        res.status(200).json({ message: 'Plataforma atualizada com sucesso' })
-      } catch (error) {
-        res.status(500).json({ message: 'Erro ao atualizar a plataforma' })
-      }
+    }
+    try {
+      const platformService = new PlatformService()
+      await platformService.putPlatformById(Number(id), data)
+      res.status(200).json({ message: 'Plataforma atualizada com sucesso' })
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao atualizar a plataforma' })
     }
   }
 }

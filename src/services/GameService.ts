@@ -5,7 +5,6 @@ class GameService {
   async create(data: Game): Promise<Game> {
     const game = await prismaClient.game.create({
       data: {
-        id: data.id,
         name: data.name,
         developer: data.developer,
         genre: data.genre,

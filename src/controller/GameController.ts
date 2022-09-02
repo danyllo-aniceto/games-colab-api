@@ -29,7 +29,7 @@ export class GameController {
     try {
       await validator
         .deleteByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
@@ -50,7 +50,7 @@ export class GameController {
     try {
       await validator
         .getByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
@@ -90,14 +90,13 @@ export class GameController {
       if (!(await validator.idExist(Number(id)))) {
         return res.status(400).json({ message: 'Jogo não existe' })
       }
-
-      try {
-        const gameService = new GameService()
-        await gameService.putGameById(Number(id), data)
-        res.status(200).json({ message: 'Jogo atualizado com sucesso' })
-      } catch (error) {
-        res.status(500).json({ message: 'Erro ao atualizar o jogo' })
-      }
+    }
+    try {
+      const gameService = new GameService()
+      await gameService.putGameById(Number(id), data)
+      res.status(200).json({ message: 'Jogo atualizado com sucesso' })
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao atualizar o jogo' })
     }
   }
 }

@@ -21,7 +21,7 @@ export class UserController {
       const user = await userService.create(data)
       res.status(201).json(user)
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao cadastrar o usuário' })
+      res.status(500).json({ message: `Erro ao cadastrar usuário - ${error}` })
     }
   }
 
@@ -32,7 +32,7 @@ export class UserController {
     try {
       await validator
         .deleteByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
@@ -54,8 +54,9 @@ export class UserController {
     try {
       await validator
         .getByIdValidator()
-        .validate(Number(id), { abortEarly: false })
+        .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
+      console.log('caiu', error.message)
       return res.status(400).json({ message: error.message })
     }
 
@@ -94,14 +95,13 @@ export class UserController {
       if (!(await validator.idExist(Number(id)))) {
         return res.status(400).json({ message: 'Usuário não existe' })
       }
-
-      try {
-        const userService = new UserService()
-        await userService.putUserById(Number(id), data)
-        res.status(200).json({ message: 'Usuário atualizado com sucesso' })
-      } catch (error) {
-        res.status(500).json({ message: 'Erro ao atualizar o usuário' })
-      }
+    }
+    try {
+      const userService = new UserService()
+      await userService.putUserById(Number(id), data)
+      res.status(200).json({ message: 'Usuário atualizado com sucesso' })
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao atualizar o usuário' })
     }
   }
 }
