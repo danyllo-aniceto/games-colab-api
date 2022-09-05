@@ -1,11 +1,12 @@
 import { Game } from '@prisma/client'
 import { Request, Response } from 'express'
+import { IGameDTO } from '../dtos/IGameDTO'
 import { GameService } from '../services/GameService'
 import { GameValidator } from '../validators/GameValidator'
 
 export class GameController {
   async create(req: Request, res: Response) {
-    const data: Game = req.body
+    const data: IGameDTO = req.body
 
     const validator = new GameValidator()
     try {
@@ -18,7 +19,7 @@ export class GameController {
       const game = await gameService.create(data)
       res.status(201).json(game)
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao cadastrar jogo' })
+      res.status(500).json({ message: `Erro ao cadastrar jogo ${error}` })
     }
   }
 
@@ -96,7 +97,7 @@ export class GameController {
       await gameService.putGameById(Number(id), data)
       res.status(200).json({ message: 'Jogo atualizado com sucesso' })
     } catch (error) {
-      res.status(500).json({ message: 'Erro ao atualizar o jogo' })
+      res.status(500).json({ message: `Erro ao atualizar jogo ${error}` })
     }
   }
 }

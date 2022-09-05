@@ -1,16 +1,23 @@
 import { Game } from '@prisma/client'
+import { IGameDTO } from '../dtos/IGameDTO'
 import prismaClient from '../prisma'
 
 class GameService {
-  async create(data: Game): Promise<Game> {
+  async create(data: IGameDTO): Promise<Game> {
     const game = await prismaClient.game.create({
       data: {
         name: data.name,
         developer: data.developer,
         genre: data.genre,
         image: data.image,
-        summary: data.summary
-      }
+        summary: data.summary,
+        PlatformGame: {
+          create: data.idPlatform.map(item => {
+            return { idPlatform: item }
+          })
+        }
+      },
+      include: { PlatformGame: true }
     })
     return game
   }
@@ -29,7 +36,7 @@ class GameService {
     return games
   }
 
-  async putGameById(id: number, data: Game): Promise<void> {
+  async putGameById(id: number, data: IGameDTO): Promise<void> {
     await prismaClient.game.update({
       where: { id: id },
       data: {
@@ -37,8 +44,14 @@ class GameService {
         developer: data.developer,
         genre: data.genre,
         image: data.image,
-        summary: data.summary
-      }
+        summary: data.summary,
+        PlatformGame: {
+          create: data.idPlatform.map(item => {
+            return { idPlatform: item }
+          })
+        }
+      },
+      include: { PlatformGame: true }
     })
   }
 }

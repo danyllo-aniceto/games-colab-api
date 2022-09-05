@@ -9,8 +9,6 @@ class GameValidator {
     return !!game
   }
 
- 
-
   createValidator() {
     return yup.object().shape({
       name: yup.string().required('Name is required'),
@@ -18,7 +16,7 @@ class GameValidator {
       developer: yup.string().required('Developer is required'),
       summary: yup.string().required('Summary is required'),
       genre: yup.string().required('Genre is required'),
-    
+      idPlatform: yup.array().required('idPlatform is Required')
     })
   }
 
@@ -30,7 +28,7 @@ class GameValidator {
       developer: yup.string().optional(),
       summary: yup.string().optional(),
       genre: yup.string().optional(),
-     
+      idPlatform: yup.number().optional()
     })
   }
 

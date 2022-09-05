@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   name       String
   email      String
   password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt()
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt()
+  Evaluation Evaluation[]
 
   @@map("users")
 }
@@ -36,7 +37,10 @@ model Game {
   summary      String
   genre        String
   image        String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt()
   PlatformGame PlatformGame[]
+  Evaluation   Evaluation[]
 
   @@map("games")
 }
@@ -51,4 +55,18 @@ model PlatformGame {
   Game       Game?     @relation(fields: [idGame], references: [id])
 
   @@map("platformGame")
+}
+
+model Evaluation {
+  id         Int      @id @default(autoincrement())
+  idUser     Int
+  idGame     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+  rating     Int
+  comment    String
+  User       User?    @relation(fields: [idUser], references: [id])
+  Game       Game?    @relation(fields: [idGame], references: [id])
+
+  @@map("evaluation")
 }
