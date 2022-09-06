@@ -47,7 +47,7 @@ CREATE TABLE "platformGame" (
 );
 
 -- CreateTable
-CREATE TABLE "Evaluation" (
+CREATE TABLE "evaluations" (
     "id" SERIAL NOT NULL,
     "idUser" INTEGER NOT NULL,
     "idGame" INTEGER NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE "Evaluation" (
     "rating" INTEGER NOT NULL,
     "comment" TEXT NOT NULL,
 
-    CONSTRAINT "Evaluation_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "evaluations_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
@@ -66,7 +66,7 @@ ALTER TABLE "platformGame" ADD CONSTRAINT "platformGame_idPlatform_fkey" FOREIGN
 ALTER TABLE "platformGame" ADD CONSTRAINT "platformGame_idGame_fkey" FOREIGN KEY ("idGame") REFERENCES "games"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Evaluation" ADD CONSTRAINT "Evaluation_idUser_fkey" FOREIGN KEY ("idUser") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "evaluations" ADD CONSTRAINT "evaluations_idUser_fkey" FOREIGN KEY ("idUser") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Evaluation" ADD CONSTRAINT "Evaluation_idGame_fkey" FOREIGN KEY ("idGame") REFERENCES "games"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "evaluations" ADD CONSTRAINT "evaluations_idGame_fkey" FOREIGN KEY ("idGame") REFERENCES "games"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

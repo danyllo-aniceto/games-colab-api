@@ -1,4 +1,5 @@
 import { Router, Request, Response, response } from 'express'
+import { EvaluationController } from './controller/EvaluationController'
 import { GameController } from './controller/GameController'
 import { PlatformController } from './controller/PlatformController'
 import { UserController } from './controller/UserController'
@@ -6,6 +7,7 @@ import { UserController } from './controller/UserController'
 const userController = new UserController()
 const platformController = new PlatformController()
 const gameController = new GameController()
+const evaluationController = new EvaluationController()
 
 const router = Router()
 
@@ -30,5 +32,11 @@ router.get('/games', gameController.getGames)
 router.get('/games/:id', gameController.getGameById)
 router.delete('/games/:id', gameController.delete)
 router.put('/games/:id', gameController.putGameById)
+
+router.post('/evaluations', evaluationController.create)
+router.get('/evaluations', evaluationController.getEvaluations)
+router.get('/evaluations/:id', evaluationController.getEvaluationById)
+router.delete('/evaluations/:id', evaluationController.delete)
+router.put('/evaluations/:id', gameController.putGameById)
 
 export { router }

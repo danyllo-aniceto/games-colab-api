@@ -68,5 +68,5 @@ model Evaluation {
   User       User?    @relation(fields: [idUser], references: [id])
   Game       Game?    @relation(fields: [idGame], references: [id])
 
-  @@map("evaluation")
+  @@map("evaluations")
 }
