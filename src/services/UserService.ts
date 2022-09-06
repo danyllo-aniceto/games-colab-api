@@ -1,16 +1,25 @@
 import { User } from '@prisma/client'
+import { hashSync } from 'bcryptjs'
 import prismaClient from '../prisma'
 
+interface IUserCreate {
+  name: string
+  email: string
+}
+
 class UserService {
-  async create(data: User): Promise<User> {
+  async create(data: User): Promise<IUserCreate> {
     const user = await prismaClient.user.create({
       data: {
         name: data.name,
         email: data.email,
-        password: data.password
+        password: hashSync(data.password, 8)
       }
     })
-    return user
+    return {
+      name: user.name,
+      email: user.email
+    }
   }
 
   async delete(id: number): Promise<void> {
@@ -33,7 +42,7 @@ class UserService {
       data: {
         name: data.name,
         email: data.email,
-        password: data.password
+        password: hashSync(data.password || '', 8)
       }
     })
   }

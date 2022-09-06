@@ -1,6 +1,7 @@
 import { User } from '@prisma/client'
 import { Request, Response } from 'express'
 import { UserService } from '../services/UserService'
+import { ApiError } from '../validators/Exceptions/ApiError'
 import { UserValidator } from '../validators/UserValidator'
 
 export class UserController {
@@ -15,6 +16,8 @@ export class UserController {
     } catch (error) {
       return res.status(400).json({ message: error.message })
     }
+    if (await validator.emailExist(data.email))
+      throw new ApiError(400, 'User already exists')
 
     try {
       const userService = new UserService()

@@ -8,9 +8,9 @@
     "skipLibCheck": true,
     "outDir": "build",
     "rootDir": "./",
-    // "typeRoots": [
-    //   "./src/@types",
-    //   "node_modules/@types"
-    // ]
+    "typeRoots": [
+      "./src/@types",
+      "node_modules/@types"
+    ]
   }
 }

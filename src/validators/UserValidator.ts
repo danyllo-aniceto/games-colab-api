@@ -8,6 +8,12 @@ class UserValidator {
     })
     return !!user
   }
+  async emailExist(email: string): Promise<boolean> {
+    const user = await prismaClient.user.findFirst({
+      where: { email }
+    })
+    return !!user
+  }
 
   createValidator() {
     return yup.object().shape({
