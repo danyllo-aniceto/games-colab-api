@@ -5,7 +5,7 @@ import { PlatformService } from '../services/PlatformService'
 import { GameService } from '../services/GameService'
 
 const firebaseActive = process.env.firebaseActive === 'true' ? true : false
-const name_app = process.env.name_app || 'Vivinio'
+const name_app = process.env.name_app || 'Games'
 
 export async function uploadImage(data: any, request: Request) {
   const storageService = new StorageService()

@@ -5,7 +5,7 @@ export interface IGameDTO {
   summary: string
   genre: string
   image: string
-  idPlatform?: number[] | string
+  idPlatform?: number[]
   created_at?: Date
   updated_at?: Date
 }

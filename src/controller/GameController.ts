@@ -4,6 +4,7 @@ import { IGameDTO } from '../dtos/IGameDTO'
 import { GameService } from '../services/GameService'
 import { ApiError } from '../validators/Exceptions/ApiError'
 import { GameValidator } from '../validators/GameValidator'
+import { uploadImage } from './UploadController'
 
 export class GameController {
   async create(req: Request, res: Response) {
@@ -12,7 +13,6 @@ export class GameController {
     if (typeof data.idPlatform === 'string') {
       newData = { ...data, idPlatform: JSON.parse(data.idPlatform) }
     }
-
     const validator = new GameValidator()
     try {
       await validator.createValidator().validate(newData, { abortEarly: false })
@@ -22,6 +22,8 @@ export class GameController {
     } catch (error) {
       throw new ApiError(400, error.message || error)
     }
+
+    newData.image = (await uploadImage(newData, req)) || ''
 
     const gameService = new GameService()
     const game = await gameService.create(newData)
