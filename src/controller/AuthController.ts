@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { AuthService } from '../services/AuthService'
 import { AuthValidator } from '../validators/AuthValidator'
+import { ApiError } from '../validators/Exceptions/ApiError'
 
 class AuthController {
   async handle(request: Request, response: Response) {
@@ -12,7 +13,7 @@ class AuthController {
         .authValidation()
         .validate(request.body, { abortEarly: false })
     } catch (error) {
-      return response.status(200).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
 
     const authenticateUserService = new AuthService()

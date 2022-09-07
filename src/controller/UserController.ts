@@ -14,18 +14,14 @@ export class UserController {
         abortEarly: false
       })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
     if (await validator.emailExist(data.email))
       throw new ApiError(400, 'User already exists')
 
-    try {
-      const userService = new UserService()
-      const user = await userService.create(data)
-      res.status(201).json(user)
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao cadastrar usuário - ${error}` })
-    }
+    const userService = new UserService()
+    const user = await userService.create(data)
+    res.status(201).json(user)
   }
 
   async delete(req: Request, res: Response) {
@@ -37,17 +33,17 @@ export class UserController {
         .deleteByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
 
-    try {
-      const userService = new UserService()
-      await userService.delete(Number(id))
-
-      res.status(200).json({ message: 'Usuário deletado com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao deletar usuário' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Usuário não existe')
     }
+
+    const userService = new UserService()
+    await userService.delete(Number(id))
+
+    res.status(200).json({ message: 'Usuário deletado com sucesso' })
   }
 
   async getUserById(req: Request, res: Response) {
@@ -59,30 +55,20 @@ export class UserController {
         .getByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      console.log('caiu', error.message)
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-
-    try {
-      const userService = new UserService()
-      const user = await userService.getUserById(Number(id))
-      if (!user) {
-        res.status(200).json({ message: 'Este usuário não existe' })
-      }
-      res.status(200).json(user)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar usuário' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Usuário não existe')
     }
+    const userService = new UserService()
+    const user = await userService.getUserById(Number(id))
+    res.status(200).json(user)
   }
 
   async getUsers(req: Request, res: Response) {
-    try {
-      const userService = new UserService()
-      const allUsers = await userService.getUser()
-      res.status(200).json(allUsers)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar todos usuários' })
-    }
+    const userService = new UserService()
+    const allUsers = await userService.getUser()
+    res.status(200).json(allUsers)
   }
 
   async putUserById(req: Request, res: Response) {
@@ -95,16 +81,15 @@ export class UserController {
         .updateByIdValidator()
         .validate({ id: Number(id), ...data }, { abortEarly: false })
     } catch (error) {
-      if (!(await validator.idExist(Number(id)))) {
-        return res.status(400).json({ message: 'Usuário não existe' })
-      }
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const userService = new UserService()
-      await userService.putUserById(Number(id), data)
-      res.status(200).json({ message: 'Usuário atualizado com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao atualizar o usuário' })
+
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Este usuário não existe')
     }
+
+    const userService = new UserService()
+    await userService.putUserById(Number(id), data)
+    res.status(200).json({ message: 'Usuário atualizado com sucesso' })
   }
 }

@@ -12,7 +12,7 @@ class GameValidator {
   createValidator() {
     return yup.object().shape({
       name: yup.string().required('Name is required'),
-      image: yup.string().required('Image is required'),
+      image: yup.string(),
       developer: yup.string().required('Developer is required'),
       summary: yup.string().required('Summary is required'),
       genre: yup.string().required('Genre is required'),

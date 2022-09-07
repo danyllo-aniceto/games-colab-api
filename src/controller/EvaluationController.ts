@@ -2,6 +2,7 @@ import { Evaluation } from '@prisma/client'
 import { Request, Response } from 'express'
 import { EvaluationService } from '../services/EvaluationService'
 import { EvaluationValidator } from '../validators/EvaluationValidator'
+import { ApiError } from '../validators/Exceptions/ApiError'
 
 export class EvaluationController {
   async create(req: Request, res: Response) {
@@ -13,15 +14,12 @@ export class EvaluationController {
         abortEarly: false
       })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const evaluationService = new EvaluationService()
-      const evaluation = await evaluationService.create(data)
-      res.status(201).json(evaluation)
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao cadastrar jogo ${error}` })
-    }
+
+    const evaluationService = new EvaluationService()
+    const evaluation = await evaluationService.create(data)
+    res.status(201).json(evaluation)
   }
 
   async delete(req: Request, res: Response) {
@@ -33,16 +31,14 @@ export class EvaluationController {
         .deleteByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const evaluationService = new EvaluationService()
-      await evaluationService.delete(Number(id))
-
-      res.status(200).json({ message: 'Avaliação deletada com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao deletar avaliação ${error}` })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Avaliação não existe')
     }
+    const evaluationService = new EvaluationService()
+    await evaluationService.delete(Number(id))
+    res.status(200).json({ message: 'Avaliação deletada com sucesso' })
   }
 
   async getEvaluationById(req: Request, res: Response) {
@@ -54,29 +50,21 @@ export class EvaluationController {
         .getByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Avaliação não existe')
+    }
+    const evaluationService = new EvaluationService()
+    const evaluation = await evaluationService.getEvaluationById(Number(id))
 
-    try {
-      const evaluationService = new EvaluationService()
-      const evaluation = await evaluationService.getEvaluationById(Number(id))
-      if (!evaluation) {
-        res.status(200).json({ message: 'Esta avaliação não existe' })
-      }
-      res.status(200).json(evaluation)
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao buscar avaliação ${error}` })
-    }
+    res.status(200).json(evaluation)
   }
 
   async getEvaluations(req: Request, res: Response) {
-    try {
-      const evaluationService = new EvaluationService()
-      const allEvaluations = await evaluationService.getEvaluations()
-      res.status(200).json(allEvaluations)
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao buscar avaliações ${error}` })
-    }
+    const evaluationService = new EvaluationService()
+    const allEvaluations = await evaluationService.getEvaluations()
+    res.status(200).json(allEvaluations)
   }
 
   async putEvaluationById(req: Request, res: Response) {
@@ -89,16 +77,13 @@ export class EvaluationController {
         .updateByIdValidator()
         .validate({ id: Number(id), ...data }, { abortEarly: false })
     } catch (error) {
-      if (!(await validator.idExist(Number(id)))) {
-        return res.status(400).json({ message: 'Avaliação não existe' })
-      }
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const evaluationService = new EvaluationService()
-      await evaluationService.putEvaluationById(Number(id), data)
-      res.status(200).json({ message: 'Avalição atualizada com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao atualizar avaliação ${error}` })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Avaliação não existe')
     }
+    const evaluationService = new EvaluationService()
+    await evaluationService.putEvaluationById(Number(id), data)
+    res.status(200).json({ message: 'Avalição atualizada com sucesso' })
   }
 }

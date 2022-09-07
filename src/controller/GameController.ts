@@ -2,25 +2,30 @@ import { Game } from '@prisma/client'
 import { Request, Response } from 'express'
 import { IGameDTO } from '../dtos/IGameDTO'
 import { GameService } from '../services/GameService'
+import { ApiError } from '../validators/Exceptions/ApiError'
 import { GameValidator } from '../validators/GameValidator'
 
 export class GameController {
   async create(req: Request, res: Response) {
     const data: IGameDTO = req.body
+    let newData: IGameDTO
+    if (typeof data.idPlatform === 'string') {
+      newData = { ...data, idPlatform: JSON.parse(data.idPlatform) }
+    }
 
     const validator = new GameValidator()
     try {
-      await validator.createValidator().validate(data, { abortEarly: false })
+      await validator.createValidator().validate(newData, { abortEarly: false })
+
+      if (!req.file)
+        throw 'Image is required or invalid extension. It should be only (png, jpg, jpeg, pjpeg, gif, svg)'
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const gameService = new GameService()
-      const game = await gameService.create(data)
-      res.status(201).json(game)
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao cadastrar jogo ${error}` })
-    }
+
+    const gameService = new GameService()
+    const game = await gameService.create(newData)
+    res.status(201).json(game)
   }
 
   async delete(req: Request, res: Response) {
@@ -32,16 +37,14 @@ export class GameController {
         .deleteByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const gameService = new GameService()
-      await gameService.delete(Number(id))
-
-      res.status(200).json({ message: 'Jogo deletado com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao deletar jogo' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Jogo não existe')
     }
+    const gameService = new GameService()
+    await gameService.delete(Number(id))
+    res.status(200).json({ message: 'Jogo deletado com sucesso' })
   }
 
   async getGameById(req: Request, res: Response) {
@@ -53,29 +56,21 @@ export class GameController {
         .getByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
 
-    try {
-      const gameService = new GameService()
-      const game = await gameService.getGameById(Number(id))
-      if (!game) {
-        res.status(200).json({ message: 'Este jogo não existe' })
-      }
-      res.status(200).json(game)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar jogo' })
+    const gameService = new GameService()
+    const game = await gameService.getGameById(Number(id))
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Jogo não existe')
     }
+    res.status(200).json(game)
   }
 
   async getGames(req: Request, res: Response) {
-    try {
-      const gameService = new GameService()
-      const allGames = await gameService.getGames()
-      res.status(200).json(allGames)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar todos jogos' })
-    }
+    const gameService = new GameService()
+    const allGames = await gameService.getGames()
+    res.status(200).json(allGames)
   }
 
   async putGameById(req: Request, res: Response) {
@@ -88,16 +83,13 @@ export class GameController {
         .updateByIdValidator()
         .validate({ id: Number(id), ...data }, { abortEarly: false })
     } catch (error) {
-      if (!(await validator.idExist(Number(id)))) {
-        return res.status(400).json({ message: 'Jogo não existe' })
-      }
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const gameService = new GameService()
-      await gameService.putGameById(Number(id), data)
-      res.status(200).json({ message: 'Jogo atualizado com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: `Erro ao atualizar jogo ${error}` })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Jogo não existe')
     }
+    const gameService = new GameService()
+    await gameService.putGameById(Number(id), data)
+    res.status(200).json({ message: 'Jogo atualizado com sucesso' })
   }
 }

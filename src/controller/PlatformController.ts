@@ -1,6 +1,7 @@
 import { Platform } from '@prisma/client'
 import { Request, Response } from 'express'
 import { PlatformService } from '../services/PlatformService'
+import { ApiError } from '../validators/Exceptions/ApiError'
 import { PlatformValidator } from '../validators/PlatformValidator'
 
 export class PlatformController {
@@ -11,15 +12,12 @@ export class PlatformController {
     try {
       await validator.createValidator().validate(data, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const platformService = new PlatformService()
-      const platform = await platformService.create(data)
-      res.status(201).json(platform)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao cadastrar plataforma' })
-    }
+
+    const platformService = new PlatformService()
+    const platform = await platformService.create(data)
+    res.status(201).json(platform)
   }
 
   async delete(req: Request, res: Response) {
@@ -31,16 +29,16 @@ export class PlatformController {
         .deleteByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const platformService = new PlatformService()
-      await platformService.delete(Number(id))
 
-      res.status(200).json({ message: 'Plataforma deletada com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao deletar plataforma' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Plataforma não existe')
     }
+
+    const platformService = new PlatformService()
+    await platformService.delete(Number(id))
+    res.status(200).json({ message: 'Plataforma deletada com sucesso' })
   }
 
   async getPlatformById(req: Request, res: Response) {
@@ -52,29 +50,20 @@ export class PlatformController {
         .getByIdValidator()
         .validate({ id: Number(id) }, { abortEarly: false })
     } catch (error) {
-      return res.status(400).json({ message: error.message })
+      throw new ApiError(400, error.message || error)
     }
-
-    try {
-      const platformService = new PlatformService()
-      const platform = await platformService.getPlatformById(Number(id))
-      if (!platform) {
-        res.status(200).json({ message: 'Esta plataforma não existe' })
-      }
-      res.status(200).json(platform)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar plataforma' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Plataforma não existe')
     }
+    const platformService = new PlatformService()
+    const platform = await platformService.getPlatformById(Number(id))
+    res.status(200).json(platform)
   }
 
   async getPlatforms(req: Request, res: Response) {
-    try {
-      const platformService = new PlatformService()
-      const allPlatforms = await platformService.getPlatforms()
-      res.status(200).json(allPlatforms)
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar todas plataformas' })
-    }
+    const platformService = new PlatformService()
+    const allPlatforms = await platformService.getPlatforms()
+    res.status(200).json(allPlatforms)
   }
 
   async putPlatformById(req: Request, res: Response) {
@@ -90,13 +79,13 @@ export class PlatformController {
       if (!(await validator.idExist(Number(id)))) {
         return res.status(400).json({ message: 'Plataforma não existe' })
       }
+      throw new ApiError(400, error.message || error)
     }
-    try {
-      const platformService = new PlatformService()
-      await platformService.putPlatformById(Number(id), data)
-      res.status(200).json({ message: 'Plataforma atualizada com sucesso' })
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao atualizar a plataforma' })
+    if (!(await validator.idExist(Number(id)))) {
+      throw new ApiError(400, 'Plataforma não existe')
     }
+    const platformService = new PlatformService()
+    await platformService.putPlatformById(Number(id), data)
+    res.status(200).json({ message: 'Plataforma atualizada com sucesso' })
   }
 }

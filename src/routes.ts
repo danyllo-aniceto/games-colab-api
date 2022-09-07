@@ -5,6 +5,7 @@ import { GameController } from './controller/GameController'
 import { PlatformController } from './controller/PlatformController'
 import { UserController } from './controller/UserController'
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated'
+import { UPLOAD_IMAGE } from './middlewares/uploadFile'
 
 const userController = new UserController()
 const platformController = new PlatformController()
@@ -18,12 +19,10 @@ router.get('/', (req: Request, res: Response) => {
   response.json({ message: 'Welcome api-games-colab' })
 })
 
-// router.post('/users', ensureAuthenticated, userController.create)
-router.post('/users', userController.create)
+router.post('/users', ensureAuthenticated, userController.create)
 router.get('/users', userController.getUsers)
 router.get('/users/:id', userController.getUserById)
-// router.delete('/users/:id', ensureAuthenticated, userController.delete)
-router.delete('/users/:id', userController.delete)
+router.delete('/users/:id', ensureAuthenticated, userController.delete)
 router.put('/users/:id', ensureAuthenticated, userController.putUserById)
 
 router.post('/platforms', ensureAuthenticated, platformController.create)
@@ -36,7 +35,12 @@ router.put(
   platformController.putPlatformById
 )
 
-router.post('/games', ensureAuthenticated, gameController.create)
+router.post(
+  '/games',
+  ensureAuthenticated,
+  UPLOAD_IMAGE.single('file'),
+  gameController.create
+)
 router.get('/games', gameController.getGames)
 router.get('/games/:id', gameController.getGameById)
 router.delete('/games/:id', ensureAuthenticated, gameController.delete)
@@ -50,7 +54,11 @@ router.delete(
   ensureAuthenticated,
   evaluationController.delete
 )
-router.put('/evaluations/:id', ensureAuthenticated, gameController.putGameById)
+router.put(
+  '/evaluations/:id',
+  ensureAuthenticated,
+  evaluationController.putEvaluationById
+)
 
 router.post('/signin', authController.handle)
 

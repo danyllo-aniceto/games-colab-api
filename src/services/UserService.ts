@@ -28,12 +28,19 @@ class UserService {
 
   async getUserById(id: number): Promise<User> {
     const user: User = await prismaClient.user.findFirst({ where: { id } })
+    delete user.password
     return user
   }
 
-  async getUser(): Promise<User[]> {
+  async getUser(): Promise<any[]> {
     const users = await prismaClient.user.findMany()
-    return users
+    return users.map(item => ({
+      id: item.id,
+      name: item.name,
+      email: item.email,
+      created_at: item.created_at,
+      updated_at: item.updated_at
+    }))
   }
 
   async putUserById(id: number, data: User): Promise<void> {
