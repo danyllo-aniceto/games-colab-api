@@ -9,10 +9,20 @@ class GameValidator {
     return !!game
   }
 
+  createValidatorWithUpload() {
+    return yup.object().shape({
+      name: yup.string().required('Name is required'),
+      developer: yup.string().required('Developer is required'),
+      summary: yup.string().required('Summary is required'),
+      genre: yup.string().required('Genre is required'),
+      idPlatform: yup.array().required('idPlatform is Required')
+    })
+  }
+
   createValidator() {
     return yup.object().shape({
       name: yup.string().required('Name is required'),
-      image: yup.string(),
+      image: yup.string().required('Image is required'),
       developer: yup.string().required('Developer is required'),
       summary: yup.string().required('Summary is required'),
       genre: yup.string().required('Genre is required'),

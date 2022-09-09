@@ -7,7 +7,7 @@ import { GameValidator } from '../validators/GameValidator'
 import { uploadImage } from './UploadController'
 
 export class GameController {
-  async create(req: Request, res: Response) {
+  async createWithUpload(req: Request, res: Response) {
     const data: IGameDTO = req.body
     let newData: IGameDTO
     if (typeof data.idPlatform === 'string') {
@@ -15,7 +15,9 @@ export class GameController {
     }
     const validator = new GameValidator()
     try {
-      await validator.createValidator().validate(newData, { abortEarly: false })
+      await validator
+        .createValidatorWithUpload()
+        .validate(newData, { abortEarly: false })
 
       if (!req.file)
         throw 'Image is required or invalid extension. It should be only (png, jpg, jpeg, pjpeg, gif, svg)'
@@ -27,6 +29,20 @@ export class GameController {
 
     const gameService = new GameService()
     const game = await gameService.create(newData)
+    res.status(201).json(game)
+  }
+
+  async create(req: Request, res: Response) {
+    const data: IGameDTO = req.body
+    const validator = new GameValidator()
+    try {
+      await validator.createValidator().validate(data, { abortEarly: false })
+    } catch (error) {
+      throw new ApiError(400, error.message || error)
+    }
+
+    const gameService = new GameService()
+    const game = await gameService.create(data)
     res.status(201).json(game)
   }
 

@@ -36,11 +36,12 @@ router.put(
 )
 
 router.post(
-  '/games',
+  '/games/upload',
   ensureAuthenticated,
   UPLOAD_IMAGE.single('file'),
-  gameController.create
+  gameController.createWithUpload
 )
+router.post('/games', ensureAuthenticated, gameController.create)
 router.get('/games', gameController.getGames)
 router.get('/games/:id', gameController.getGameById)
 router.delete('/games/:id', ensureAuthenticated, gameController.delete)
