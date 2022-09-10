@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
-import { IAuthenticateRequest } from '../interfaces/IAuthenticateRequest'
+import { IAuthenticateRequest } from '../dtos/IAuthenticateRequest'
 import prismaClient from '../prisma'
 
 class AuthService {

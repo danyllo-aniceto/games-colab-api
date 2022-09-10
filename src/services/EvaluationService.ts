@@ -19,13 +19,36 @@ class EvaluationService {
   }
 
   async getEvaluations(): Promise<Evaluation[]> {
-    const evaluations = await prismaClient.evaluation.findMany()
+    const evaluations = await prismaClient.evaluation.findMany({
+      include: {
+        User: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true
+          }
+        }
+      }
+    })
     return evaluations
   }
 
   async getEvaluationById(id: number): Promise<Evaluation> {
     const evaluation: Evaluation = await prismaClient.evaluation.findFirst({
-      where: { id }
+      where: { id },
+      include: {
+        User: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true
+          }
+        }
+      }
     })
     return evaluation
   }

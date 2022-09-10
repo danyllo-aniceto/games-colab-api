@@ -42,8 +42,8 @@ router.post(
   gameController.createWithUpload
 )
 router.post('/games', ensureAuthenticated, gameController.create)
-router.get('/games', gameController.getGames)
-router.get('/games/:id', gameController.getGameById)
+router.get('/games', gameController.getGamesPlatform)
+router.get('/games/:id', gameController.getGamePlatformById)
 router.delete('/games/:id', ensureAuthenticated, gameController.delete)
 router.put('/games/:id', ensureAuthenticated, gameController.putGameById)
 

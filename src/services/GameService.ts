@@ -26,14 +26,46 @@ class GameService {
     await prismaClient.game.delete({ where: { id } })
   }
 
-  async getGameById(id: number): Promise<Game> {
-    const game: Game = await prismaClient.game.findFirst({ where: { id } })
+  async getGamePlatformById(id: number): Promise<Game> {
+    const game: Game = await prismaClient.game.findFirst({
+      where: { id },
+      include: { PlatformGame: { include: { Platform: true } } }
+    })
     return game
+  }
+
+  async getGamesPlatform(): Promise<Game[]> {
+    const games = await prismaClient.game.findMany({
+      include: { PlatformGame: { include: { Platform: true } } }
+    })
+    return games
+  }
+
+  async getGameEvaluationById(id: number): Promise<Game> {
+    const game: Game = await prismaClient.game.findFirst({
+      where: { id },
+      include: { Evaluation: { include: { User: true } } }
+    })
+    return game
+  }
+
+  async getGamesEvaluation(): Promise<Game[]> {
+    const games = await prismaClient.game.findMany({
+      include: { Evaluation: { include: { User: true } } }
+    })
+    return games
   }
 
   async getGames(): Promise<Game[]> {
     const games = await prismaClient.game.findMany()
     return games
+  }
+
+  async getGameById(id: number): Promise<Game> {
+    const game: Game = await prismaClient.game.findFirst({
+      where: { id }
+    })
+    return game
   }
 
   async putGameById(id: number, data: IGameDTO): Promise<void> {

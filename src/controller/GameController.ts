@@ -65,7 +65,13 @@ export class GameController {
     res.status(200).json({ message: 'Jogo deletado com sucesso' })
   }
 
-  async getGameById(req: Request, res: Response) {
+  async getGamesPlatform(req: Request, res: Response) {
+    const gameService = new GameService()
+    const allGames = await gameService.getGamesPlatform()
+    res.status(200).json(allGames)
+  }
+
+  async getGamePlatformById(req: Request, res: Response) {
     const { id } = req.params
 
     const validator = new GameValidator()
@@ -78,17 +84,11 @@ export class GameController {
     }
 
     const gameService = new GameService()
-    const game = await gameService.getGameById(Number(id))
+    const game = await gameService.getGamePlatformById(Number(id))
     if (!(await validator.idExist(Number(id)))) {
       throw new ApiError(400, 'Jogo não existe')
     }
     res.status(200).json(game)
-  }
-
-  async getGames(req: Request, res: Response) {
-    const gameService = new GameService()
-    const allGames = await gameService.getGames()
-    res.status(200).json(allGames)
   }
 
   async putGameById(req: Request, res: Response) {
