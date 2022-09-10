@@ -59,7 +59,7 @@ class UserService {
   async getUsersPaged(limit: number, page: number): Promise<IUserPaged> {
     const ITENS_PER_PAGE = 100
     limit = limit > ITENS_PER_PAGE || limit <= 0 ? ITENS_PER_PAGE : limit
-    const offset = page <= 0 ? 0 : page * limit
+    const offset = page <= 0 ? 1 : page * limit - limit
 
     const usersPaged = await prismaClient.user.findMany({
       orderBy: { created_at: 'asc' },
@@ -76,7 +76,15 @@ class UserService {
 
     const total = await prismaClient.user.count()
     const totalPages = total > limit ? total / limit : 1
-    return { total, page, totalPages, limit, offset, instances: usersPaged }
+
+    return {
+      total,
+      page: page <= 0 ? 1 : page,
+      totalPages,
+      limit,
+      offset: offset + limit,
+      instances: usersPaged
+    }
   }
 
   async putUserById(id: number, data: User): Promise<void> {

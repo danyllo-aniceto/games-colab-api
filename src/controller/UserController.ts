@@ -74,8 +74,8 @@ export class UserController {
   async getUsersPaged(req: Request, res: Response) {
     let { limit, page }: any = req.query
     const { type }: any = req.query
-    limit = parseInt(limit || 0)
-    page = parseInt(page || 0)
+    limit = parseInt(limit || 1)
+    page = parseInt(page || 1)
 
     const userService = new UserService()
     const allUsersPaged = await userService.getUsersPaged(limit, page)
