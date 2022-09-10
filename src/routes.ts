@@ -21,6 +21,7 @@ router.get('/', (req: Request, res: Response) => {
 
 router.post('/users', ensureAuthenticated, userController.create)
 router.get('/users', userController.getUsers)
+router.get('/users/paged', userController.getUsersPaged)
 router.get('/users/:id', userController.getUserById)
 router.delete('/users/:id', ensureAuthenticated, userController.delete)
 router.put('/users/:id', ensureAuthenticated, userController.putUserById)

@@ -71,6 +71,17 @@ export class UserController {
     res.status(200).json(allUsers)
   }
 
+  async getUsersPaged(req: Request, res: Response) {
+    let { limit, page }: any = req.query
+    const { type }: any = req.query
+    limit = parseInt(limit || 0)
+    page = parseInt(page || 0)
+
+    const userService = new UserService()
+    const allUsersPaged = await userService.getUsersPaged(limit, page)
+    res.status(200).json(allUsersPaged)
+  }
+
   async putUserById(req: Request, res: Response) {
     const { id } = req.params
     const data: User = req.body
