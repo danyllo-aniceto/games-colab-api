@@ -73,9 +73,17 @@ export class UserController {
 
   async getUsersPaged(req: Request, res: Response) {
     let { limit, page }: any = req.query
-    const { type }: any = req.query
     limit = parseInt(limit || 1)
     page = parseInt(page || 1)
+
+    const validator = new UserValidator()
+    try {
+      await validator
+        .getPagedValidor()
+        .validate({ limit, page }, { abortEarly: false })
+    } catch (error) {
+      throw new ApiError(400, error.message || error)
+    }
 
     const userService = new UserService()
     const allUsersPaged = await userService.getUsersPaged(limit, page)
