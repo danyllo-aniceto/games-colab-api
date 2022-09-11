@@ -78,7 +78,9 @@ class UserService {
     return {
       total,
       page,
-      totalPages,
+      totalPages: Number.isInteger(totalPages)
+        ? totalPages
+        : parseInt((totalPages + 1).toString()),
       limit,
       offset: offset + limit,
       instances: usersPaged
