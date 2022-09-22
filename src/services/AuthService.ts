@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { IAuthenticateRequest } from '../dtos/IAuthenticateRequest'
 import prismaClient from '../prisma'
+import { ApiError } from '../validators/Exceptions/ApiError'
 
 class AuthService {
   async execute({ email, password }: IAuthenticateRequest) {
@@ -10,14 +11,14 @@ class AuthService {
     const user = await prismaClient.user.findFirst({ where: { email } })
 
     if (!user) {
-      return { status: 400, message: 'Credenciais incorretas!' }
+      throw new ApiError(400, 'Credenciais incorretas!')
     }
 
     // Verificar se a senha está correta
     const isMatchPassword = await compare(password, user.password)
 
     if (!isMatchPassword) {
-      return { status: 400, message: 'Credenciais incorretas!' }
+      throw new ApiError(400, 'Credenciais incorretas!')
     }
 
     const token = sign(
