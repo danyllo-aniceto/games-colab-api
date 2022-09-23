@@ -22,9 +22,6 @@ class AuthController {
       password
     })
 
-    if (token.status === 400) {
-      return response.status(200).json({ message: token.message })
-    }
     return response.json(token)
   }
 }
