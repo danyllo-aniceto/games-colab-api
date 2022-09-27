@@ -15,7 +15,8 @@ class GameValidator {
       developer: yup.string().required('Developer is required'),
       summary: yup.string().required('Summary is required'),
       genre: yup.string().required('Genre is required'),
-      idPlatform: yup.array().required('idPlatform is Required')
+      idPlatform: yup.array().required('idPlatform is Required'),
+      image: yup.string()
     })
   }
 
@@ -26,7 +27,8 @@ class GameValidator {
       developer: yup.string().required('Developer is required'),
       summary: yup.string().required('Summary is required'),
       genre: yup.string().required('Genre is required'),
-      idPlatform: yup.array().required('idPlatform is Required')
+      idPlatform: yup.array().required('idPlatform is Required'),
+      file: yup.string()
     })
   }
 
