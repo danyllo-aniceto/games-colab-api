@@ -62,6 +62,8 @@ router.put(
   evaluationController.putEvaluationById
 )
 
+router.get('/getTopThreeGames', evaluationController.getTopThreeGames)
+
 router.post('/signin', authController.handle)
 
 export { router }

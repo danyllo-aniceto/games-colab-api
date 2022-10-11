@@ -1,5 +1,6 @@
 import { Evaluation } from '@prisma/client'
 import prismaClient from '../prisma'
+import { toJson } from '../utils/helpers'
 
 class EvaluationService {
   async create(data: Evaluation): Promise<Evaluation> {
@@ -63,6 +64,21 @@ class EvaluationService {
         comment: data.comment
       }
     })
+  }
+
+  async getTopThreeGames() {
+    const queryTopThreeGames: Array<{ name: string; sum: any }> =
+      await prismaClient.$queryRaw`select g.name, sum(e.rating)  
+    from users u join evaluations e on u.id = e."idUser" join games g on g.id = e."idGame"
+    group by g.id
+    order by sum(e.rating) desc limit 3`
+
+    let newList: Array<{ name: string; sum: number }> = []
+    for (const iterator of queryTopThreeGames) {
+      newList.push({ name: iterator.name, sum: Number(toJson(iterator.sum)) })
+    }
+
+    return newList
   }
 }
 

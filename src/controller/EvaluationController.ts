@@ -86,4 +86,10 @@ export class EvaluationController {
     await evaluationService.putEvaluationById(Number(id), data)
     res.status(200).json({ message: 'Avalição atualizada com sucesso' })
   }
+
+  async getTopThreeGames(req: Request, res: Response) {
+    const evaluationService = new EvaluationService()
+    const consulta = await evaluationService.getTopThreeGames()
+    res.status(200).json(consulta)
+  }
 }
