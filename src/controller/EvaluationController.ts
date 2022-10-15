@@ -61,6 +61,16 @@ export class EvaluationController {
     res.status(200).json(evaluation)
   }
 
+  async getEvaluationByIdGame(req: Request, res: Response) {
+    const { idGame } = req.params
+    console.log(idGame)
+    const evaluationService = new EvaluationService()
+    const consulta = await evaluationService.getEvaluationByIdGame(
+      Number(idGame)
+    )
+    res.status(200).json(consulta)
+  }
+
   async getEvaluations(req: Request, res: Response) {
     const evaluationService = new EvaluationService()
     const allEvaluations = await evaluationService.getEvaluations()

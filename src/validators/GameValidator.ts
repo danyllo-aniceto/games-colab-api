@@ -40,7 +40,7 @@ class GameValidator {
       developer: yup.string().optional(),
       summary: yup.string().optional(),
       genre: yup.string().optional(),
-      idPlatform: yup.number().optional()
+      idPlatform: yup.array().optional()
     })
   }
 

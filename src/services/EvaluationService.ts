@@ -54,6 +54,13 @@ class EvaluationService {
     return evaluation
   }
 
+  async getEvaluationByIdGame(idGame: number) {
+    const evaluation = await prismaClient.evaluation.findMany({
+      where: { idGame: idGame }
+    })
+    return evaluation
+  }
+
   async putEvaluationById(id: number, data: Evaluation): Promise<void> {
     await prismaClient.evaluation.update({
       where: { id: id },
@@ -67,15 +74,29 @@ class EvaluationService {
   }
 
   async getTopThreeGames() {
-    const queryTopThreeGames: Array<{ name: string; sum: any }> =
-      await prismaClient.$queryRaw`select g.name, sum(e.rating)  
+    const queryTopThreeGames: Array<{
+      name: string
+      sum: any
+      image: string
+      id: number
+    }> = await prismaClient.$queryRaw`select g.id, g.name, g.image, sum(e.rating)  
     from users u join evaluations e on u.id = e."idUser" join games g on g.id = e."idGame"
     group by g.id
     order by sum(e.rating) desc limit 3`
 
-    let newList: Array<{ name: string; sum: number }> = []
+    let newList: Array<{
+      id: number
+      name: string
+      sum: number
+      image: string
+    }> = []
     for (const iterator of queryTopThreeGames) {
-      newList.push({ name: iterator.name, sum: Number(toJson(iterator.sum)) })
+      newList.push({
+        name: iterator.name,
+        sum: Number(toJson(iterator.sum)),
+        image: iterator.image,
+        id: iterator.id
+      })
     }
 
     return newList

@@ -61,8 +61,17 @@ router.put(
   ensureAuthenticated,
   evaluationController.putEvaluationById
 )
+router.get(
+  '/evaluationByIdGame/:idGame',
+  ensureAuthenticated,
+  evaluationController.getEvaluationByIdGame
+)
 
-router.get('/getTopThreeGames', evaluationController.getTopThreeGames)
+router.get(
+  '/getTopThreeGames',
+  ensureAuthenticated,
+  evaluationController.getTopThreeGames
+)
 
 router.post('/signin', authController.handle)
 
