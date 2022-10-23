@@ -19,7 +19,7 @@ router.get('/', (req: Request, res: Response) => {
   response.json({ message: 'Welcome api-games-colab' })
 })
 
-router.post('/users', ensureAuthenticated, userController.create)
+router.post('/users', userController.create)
 router.get('/users', userController.getUsers)
 router.get('/users/paged', userController.getUsersPaged)
 router.get('/users/:id', userController.getUserById)

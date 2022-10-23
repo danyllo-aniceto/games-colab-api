@@ -77,11 +77,13 @@ class GameService {
         genre: data.genre,
         image: data.image,
         summary: data.summary,
-        PlatformGame: {
-          create: data.idPlatform.map(item => {
-            return { idPlatform: item }
-          })
-        }
+        PlatformGame: data.idPlatform
+          ? {
+              create: data.idPlatform.map(item => {
+                return { idPlatform: item }
+              })
+            }
+          : undefined
       },
       include: { PlatformGame: true }
     })
