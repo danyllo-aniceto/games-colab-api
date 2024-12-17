@@ -6,7 +6,14 @@ import { router } from './routes'
 import { ApiError } from './validators/Exceptions/ApiError'
 
 const app = express()
-app.use(cors())
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === 'production' ? process.env.URL_FRONTEND : 'http://localhost:3000',  
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  })
+)
 
 app.use(express.json())
 app.use(router)
