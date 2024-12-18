@@ -10,12 +10,15 @@ const cors_1 = __importDefault(require("cors"));
 const routes_1 = require("./routes");
 const ApiError_1 = require("./validators/Exceptions/ApiError");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({
-    origin: process.env.NODE_ENV === 'production' ? process.env.URL_FRONTEND : 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-}));
+// app.use(
+//   cors({
+//     origin: process.env.NODE_ENV === 'production' ? process.env.URL_FRONTEND : 'http://localhost:3000',  
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//     credentials: true
+//   })
+// )
+app.use((0, cors_1.default)({ origin: '*' }));
 app.use(express_1.default.json());
 app.use(routes_1.router);
 // eslint-disable-next-line no-unused-vars
